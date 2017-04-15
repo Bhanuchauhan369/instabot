@@ -10,6 +10,7 @@ def self_info():
     url =base_url +'users/self/?access_token=' +ACCESS_TOKEN
     my_info = requests.get(url).json()
     print (my_info)
+    print(my_info['data']['id'])
 self_info()
 
 
@@ -20,4 +21,15 @@ def user_info(insta_user):
     print (user_info)
     print(user_info['data'][0]['username'])
     print(user_info['meta']['code'])
+
+    print(user_info['data'][0]['id'])
+    return user_info['data'][0]['id']
 user_info("ananya_thakur333")
+
+#  get user post
+def get_user_post(insta_username):
+    insta_user_id=user_info(insta_username)
+    request_url=base_url +'users/'+str(insta_user_id)+'/media/recent/?access_token='+ACCESS_TOKEN
+    recent_post = requests.get(request_url).json()
+    print (recent_post)
+get_user_post("ananya_thakur333")
