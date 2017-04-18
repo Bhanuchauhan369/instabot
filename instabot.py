@@ -58,4 +58,14 @@ def comment_on_user_post(insta_user):
     print(comment_response)
 
 
-comment_on_user_post("ananya_thakur333")
+#to see  comments on user post
+def see_comments_on_user_post(insta_user):
+    id = get_user_post(insta_user)
+    req_url=base_url+'media/'+id+'/comments?access_token='+ACCESS_TOKEN
+    response = requests.get(req_url).json()
+    print("reteriving comments....")
+    print(response)
+
+see_comments_on_user_post("ananya_thakur333")
+
+
