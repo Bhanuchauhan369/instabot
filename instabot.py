@@ -6,7 +6,7 @@ print("___________It is Access token for using app______  "+ACCESS_TOKEN)
 
 base_url='https://api.instagram.com/v1/'
 
-
+#-----owner information------
 def self_info():
     url =base_url +'users/self/?access_token=' +ACCESS_TOKEN
     my_info = requests.get(url).json()
@@ -37,26 +37,34 @@ def user_info(insta_user):
     print (user_info)
     print(user_info['data'][0]['username'])
     print(user_info['meta']['code'])
-
     print(user_info['data'][0]['id'])
     return user_info['data'][0]['id']
 #user_info("ananya_thakur333")
 
 
-#----- get user id-----
+#----- get user id----------
 def get_user_id(insta_user):
     user_id = user_info(insta_user)
     print("user_id is:")
     print(user_id)
-get_user_id("ananya_thakur333")
+#get_user_id("ananya_thakur333")
+
+
+
+#--------user search by name------
+def get_user_search_byname(insta_user):
+    url= url= base_url+'users/search?q='+insta_user +'&access_token='+ACCESS_TOKEN
+    user_info = requests.get(url).json()
+    print(user_info['data'][0]['username'])
+    return user_info['data'][0]['username']
+get_user_search_byname("ananya_thakur333")
 
 
 
 
 
 
-
-# ---get user post----
+#- ---get user post----
 def get_user_post(insta_username):
     insta_user_id=user_info(insta_username)
     request_url=base_url +'users/'+str(insta_user_id)+'/media/recent/?access_token='+ACCESS_TOKEN
