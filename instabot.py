@@ -24,7 +24,7 @@ def user_info(insta_user):
 
     print(user_info['data'][0]['id'])
     return user_info['data'][0]['id']
-#user_info("ananya_thakur333")
+#user_info("    ananya_thakur333")
 
 #  get user post
 def get_user_post(insta_username):
@@ -32,7 +32,7 @@ def get_user_post(insta_username):
     request_url=base_url +'users/'+str(insta_user_id)+'/media/recent/?access_token='+ACCESS_TOKEN
     recent_post = requests.get(request_url).json()
     print("user's recent post is:"+str(recent_post['data'][0]['link']))
-    print (recent_post)
+    #print (recent_post)
     return recent_post['data'][0]['id']
 
 #get_user_post("ananya_thakur333")
@@ -58,14 +58,25 @@ def comment_on_user_post(insta_user):
     print(comment_response)
 
 
+
 #to see  comments on user post
 def see_comments_on_user_post(insta_user):
     id = get_user_post(insta_user)
     req_url=base_url+'media/'+id+'/comments?access_token='+ACCESS_TOKEN
     response = requests.get(req_url).json()
     print("reteriving comments....")
+    #print(response)
+    return response['data'][0]['id']
+#see_comments_on_user_post("ananya_thakur333")
+
+
+# delete the comment on user post
+def delete_the_comment_on_user_post(insta_user):
+    user_id = get_user_post(insta_user)
+    cmt_id = see_comments_on_user_post(insta_user)
+    req_url= base_url + 'media/' + user_id + '/comments/'+cmt_id + '?access_token='+ACCESS_TOKEN
+    response = requests.delete(req_url).json()
+    print("jjghhygjy")
     print(response)
 
-see_comments_on_user_post("ananya_thakur333")
-
-
+delete_the_comment_on_user_post("ananya_thakur333")
