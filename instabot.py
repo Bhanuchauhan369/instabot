@@ -16,8 +16,6 @@ def self_info():
 
 
 ####################################################################################################################
-
-
 # -------owner information field by field------------
 def complete_self_info():
     url = base_url + 'users/self/?access_token=' + ACCESS_TOKEN
@@ -38,12 +36,10 @@ def complete_self_info():
         print('Owner bio is: ' + str(my_info['data']['bio']))
     else:
         print('Owner bio is: ' + "Owner has not Bio ")
-
-
 #complete_self_info()
+
+
 # *********************************************************************************************************************
-
-
 # -----user information in the form of json-------------
 def user_info(insta_user):
     url = base_url + 'users/search?q=' + insta_user + '&access_token=' + ACCESS_TOKEN
@@ -51,10 +47,7 @@ def user_info(insta_user):
     print("info of user  in the form of json")
     #print(insta_user_info)
     return insta_user_info['data'][0]['id']
-
-
 #user_info("ananya_thakur333")
-
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,21 +69,23 @@ def detail_user_info(insta_user):
         print('User bio is: ' + str(insta_user_info['data'][0]['bio']))
     else:
         print('User bio is: ' + "User has not Bio ")
-
-
 #detail_user_info("ananya_thakur333")
+
+
 ###########################################################################################################
 
 # ----- get user id----------
 def get_user_id(insta_user):
-    user_id = user_info(insta_user)
-    print("user_id is:")
-    print(user_id)
-    return user_id
-
-
-
+    url = base_url + 'users/search?q=' + insta_user + '&access_token=' + ACCESS_TOKEN
+    insta_user_info = requests.get(url).json()
+    if insta_user_info['data'][0]['id'] == '':
+        print("The User Is Not Found")
+    else:
+        print("Id of user is..........   " + insta_user_info['data'][0]['id'])
+        return insta_user_info['data'][0]['id']
 #get_user_id("ananya_thakur333")
+
+
 # ************************************************************************************************************
 #----Get the Total no. of user Post-------
 def get_post_id(user_name):
@@ -99,11 +94,9 @@ def get_post_id(user_name):
     recent_post = requests.get(url).json()
     print("it is the link of a recent post of user " +recent_post['data'][0]['link'])
     #print(recent_post)
-    for number in range(0, len(recent_post["data"]), 1):  #traversingh all post id of userpass
-
-
-        print("-------------Total Number Of posts-------- " + str(number))
-    return recent_post['data'][0]['id']
+    for number in range(0, len(recent_post["data"]), 1):
+        print("===Total Number Of posts===" + str(number))
+        return recent_post['data'][0]['id']
 
 
 ####################################################################################################################
@@ -192,6 +185,52 @@ def delete_the_comment_on_user_post(insta_user):
 #delete_the_comment_on_user_post("ananya_thakur333")
 
 
+#===================================================================================================================
+#-------Average Function------
+def average_number_in_comment(post_id):
+    count = 0
+    url = base_url+ "media/" + str(post_id) + "/comments/?access_token=" + ACCESS_TOKEN
+    comment_data = requests.get(url).json()
+    comments_list = [] #empty list
+    if len(comment_data['data']) != 0:
+        for comment in comment_data['data']:
+            comments_list.append(comment['text'])
+            word_length = len(comment['text'].split())
+            count = count + word_length
+        avg = float(count)/len(comments_list)
+        print("--------------------hence average is---------%.2f   "%(avg))
+    else:
+        print("======Not any Comment======")
+#===================================================================================================================
+#-----Delete the comment by word------
+def delete_comment_by_word(insta_user):
+    comment_list = []
+    post_id = get_post_id(insta_user)
+    search_word= input("====Please enter the word which you want to search==")
+    request_url = base_url + 'media/' + post_id + '/comments?access_token=' + ACCESS_TOKEN
+    # print (request_url)
+    comments = requests.get(request_url).json()
+    comments_result = comments['data']
+
+
+    for i in range(len(comments_result)):
+        single_word = comments_result[i]['text'].split()
+
+        if search_word in single_word:
+            comment_list.append(comments_result[i]['id'])
+    if len(comment_list):
+        for i in comment_list:
+            request_url = base_url + 'media/' + post_id + '/comments/' + str(i) + '?access_token=' + ACCESS_TOKEN
+            # print(request_url)
+            delete_comment = requests.delete(request_url).json()
+        print("===Comment Is Deleted Succesfully===")
+    else:
+        print("===Comment Is Not Found===")
+
+
+
+
+
 #######################################################################################################################
 
 #to enter in the while loop to repeat this task again and again
@@ -216,7 +255,7 @@ while count=='y':
         complete_self_info()
 
     elif choice=='2':
-        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or Kaurl19  ")
+        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or kaurl19  ")
         if insta_user_name=='ananya_thakur333':
             detail_user_info(insta_user_name)
         elif insta_user_name=='kaurl19':
@@ -225,7 +264,7 @@ while count=='y':
             print("PLEASE ENTER A VALID NAME FROM OPTION PROVIDED TO YOU")
 
     elif choice=='3':
-        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or Kaurl19 ")
+        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or kaurl19 ")
         if insta_user_name == 'ananya_thakur333':
             get_user_post(insta_user_name)
         elif insta_user_name == 'kaurl19':
@@ -234,7 +273,7 @@ while count=='y':
             print("PLEASE ENTER A VALID NAME FROM OPTION PROVIDED TO YOU")
 
     elif choice=='4':
-        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or Kaurl19 ")
+        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or kaurl19 ")
         if insta_user_name == 'ananya_thakur333':
             like_post(insta_user_name)
         elif insta_user_name == 'kaurl19':
@@ -243,7 +282,7 @@ while count=='y':
             print("PLEASE ENTER A VALID NAME FROM OPTION PROVIDED TO YOU")
 
     elif choice=='5':
-        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or Kaurl19 ")
+        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or kaurl19 ")
         if insta_user_name == 'ananya_thakur333':
             see_comments_on_user_post(insta_user_name)
         elif insta_user_name == 'kaurl19':
@@ -252,7 +291,7 @@ while count=='y':
             print("PLEASE ENTER A VALID NAME FROM OPTION PROVIDED TO YOU")
 
     elif choice=='6':
-        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or Kaurl19 ")
+        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or kaurl19 ")
         if insta_user_name == 'ananya_thakur333':
             comment_on_user_post(insta_user_name)
         elif insta_user_name == 'kaurl19':
@@ -262,15 +301,37 @@ while count=='y':
 
 
     elif choice=='7':
-        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or Kaurl19 ")
+        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or kaurl19 ")
         if insta_user_name == 'ananya_thakur333':
             delete_the_comment_on_user_post(insta_user_name)
         elif insta_user_name == 'kaurl19':
             delete_the_comment_on_user_post(insta_user_name)
         else:
             print("PLEASE ENTER A VALID NAME FROM OPTION PROVIDED TO YOU")
-    else:
-        print("........wrong choice entered.....thank you.....")
 
-    print("*************.........Do You want to use this app again........***********")
-    count = input("... #####  Enter 'y' if you want to use this app again #### .....")
+
+
+    elif choice=='8':
+        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or kaurl19 ")
+        if insta_user_name == 'ananya_thakur333':
+            post_id = get_post_id(insta_user_name)
+            average_number_in_comment(post_id)
+        elif insta_user_name == 'kaurl19':
+            post_id = get_post_id(insta_user_name)
+            average_number_in_comment(post_id)
+        else:
+            print("PLEASE ENTER A VALID NAME FROM OPTION PROVIDED TO YOU")
+    elif choice == '9':
+        insta_user_name = input("Please Enter Valid User Name Either ananya_thakur333 or kaurl19 ")
+        if insta_user_name == 'ananya_thakur333':
+            delete_comment_by_word(insta_user_name)
+        elif insta_user_name == 'kaurl19':
+            delete_comment_by_word(insta_user_name)
+        else:
+            print("...... PLEASE ENTER A VALID NAME FROM OPTION PROVIDED TO YOU.....")
+
+    else:
+        print("=====Wrong Choice=====")
+
+
+    count = input("===Enter 'y' if you want to use this app again===")
